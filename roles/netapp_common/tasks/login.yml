@@ -1,0 +1,10 @@
+---
+
+- name: Configure login banner
+  netapp.ontap.na_ontap_login_messages:
+    banner: "{{ netapp_common_login_banner }}"
+    show_cluster_motd: true
+    hostname: "{{ netapp_common_hostname }}"
+    username: "{{ netapp_common_username }}"
+    password: "{{ netapp_common_password }}"
+    validate_certs: "{{ netapp_common_validate_certs | default(false) }}"

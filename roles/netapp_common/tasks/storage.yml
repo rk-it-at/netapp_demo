@@ -1,0 +1,89 @@
+---
+
+- name: Configure aggregates (tiers)
+  netapp.ontap.na_ontap_aggregate:
+    name: "{{ item['name'] }}"
+    disk_type: "{{ item['disk_type'] | default(omit) }}"
+    disk_count: "{{ item['disk_count' ] | default(omit) }}"
+    disks: "{{ item['disks'] | default(omit) }}"
+    nodes: "{{ item['nodes'] | default(omit) }}"
+    service_state: "{{ item['service_state'] | default('online') }}"
+    state: "{{ item['state'] | default('present') }}"
+    hostname: "{{ netapp_common_hostname }}"
+    username: "{{ netapp_common_username }}"
+    password: "{{ netapp_common_password }}"
+    validate_certs: "{{ netapp_common_validate_certs | default(false) }}"
+  loop: "{{ netapp_common_aggregates }}"
+
+- name: Configure storage vm (svm)
+  netapp.ontap.na_ontap_svm:
+    name: "{{ item['name'] }}"
+    root_volume_aggregate: "{{ item['root_volume_aggregate'] | default(omit) }}"
+    services: "{{ item['services'] | default(omit) }}"
+    state: "{{ item['state'] | default('present') }}"
+    hostname: "{{ netapp_common_hostname }}"
+    username: "{{ netapp_common_username }}"
+    password: "{{ netapp_common_password }}"
+    validate_certs: "{{ netapp_common_validate_certs | default(false) }}"
+  loop: "{{ netapp_common_svms }}"
+
+- name: Configure data interfaces for network shares
+  netapp.ontap.na_ontap_interface:
+    interface_name: "{{ item['data_interface']['interface_name'] }}"
+    address: "{{ item['data_interface']['address'] }}"
+    netmask: "{{ item['data_interface']['netmask'] }}"
+    protocols: "{{ item['data_interface']['protocols'] }}"
+    role: "{{ item['data_interface']['role'] }}"
+    home_node: "{{ item['data_interface']['home_node'] }}"
+    vserver: "{{ item['data_interface']['vserver'] }}"
+    state: "{{ item['data_interface']['state'] | default('present') }}"
+    hostname: "{{ netapp_common_hostname }}"
+    username: "{{ netapp_common_username }}"
+    password: "{{ netapp_common_password }}"
+    validate_certs: "{{ netapp_common_validate_certs | default(false) }}"
+  loop: "{{ netapp_common_svms }}"
+  when: item['data_interface'] is defined
+
+- name: Configure export policies
+  netapp.ontap.na_ontap_export_policy:
+    name: "{{ item['name'] }}"
+    vserver: "{{ item['vserver'] }}"
+    state: "{{ item['state'] | default('present') }}"
+    hostname: "{{ netapp_common_hostname }}"
+    username: "{{ netapp_common_username }}"
+    password: "{{ netapp_common_password }}"
+    validate_certs: "{{ netapp_common_validate_certs | default(false) }}"
+  loop: "{{ netapp_common_export_policies }}"
+
+- name: Configure export policy rules
+  netapp.ontap.na_ontap_export_policy_rule:
+    name: "{{ item[0]['name'] }}"
+    client_match: "{{ item[1]['client_match'] | default(omit) }}"
+    ro_rule: "{{ item[1]['ro_rule'] | default(omit) }}"
+    rw_rule: "{{ item[1]['rw_rule'] | default(omit) }}"
+    super_user_security: "{{ item[1]['super_user_security'] | default(omit) }}"
+    vserver: "{{ item[0]['vserver'] }}"
+    state: "{{ item['state'] | default('present') }}"
+    hostname: "{{ netapp_common_hostname }}"
+    username: "{{ netapp_common_username }}"
+    password: "{{ netapp_common_password }}"
+    validate_certs: "{{ netapp_common_validate_certs | default(false) }}"
+  loop: "{{ netapp_common_export_policies | subelements('rules') }}"
+
+- name: Configure storage volumes
+  netapp.ontap.na_ontap_volume:
+    name: "{{ item['name'] }}"
+    aggregate_name: "{{ item['aggregate_name'] | default(omit) }}"
+    export_policy: "{{ item['export_policy'] | default(omit) }}"
+    junction_path: "{{ item['junction_path'] | default(omit) }}"
+    nas_application_template: "{{ item['nas_application_template'] | default(omit) }}"
+    size: "{{ item['size'] | default(omit) }}"
+    size_unit: "{{ item['size_unit'] | default(omit) }}"
+    type: "{{ item['type'] | default('rw') }}"
+    vserver: "{{ item['vserver'] }}"
+    state: "{{ item['state'] | default('present') }}"
+    hostname: "{{ netapp_common_hostname }}"
+    username: "{{ netapp_common_username }}"
+    password: "{{ netapp_common_password }}"
+    validate_certs: "{{ netapp_common_validate_certs | default(false) }}"
+  loop: "{{ netapp_common_volumes }}"

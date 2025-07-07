@@ -1,0 +1,14 @@
+---
+# tasks file for netapp_common
+
+- name: Include network tasks
+  ansible.builtin.include_tasks:
+    file: network.yml
+
+- name: Include login tasks
+  ansible.builtin.include_tasks:
+    file: login.yml
+
+- name: Include storage tasks
+  ansible.builtin.include_tasks:
+    file: storage.yml

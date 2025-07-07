@@ -1,0 +1,29 @@
+---
+
+- name: Upload ISO to NFS share
+  hosts: linux
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Mount ISO share
+      ansible.posix.mount:
+        path: /media
+        src: "{{ vmware_iso_store }}"
+        fstype: nfs
+        opts: "rw"
+        state: ephemeral
+
+    - name: Download Fedora 42 Server netinstall image
+      ansible.builtin.get_url:
+        url: "{{ linux_iso_image }}"
+        dest: /media/
+        mode: "0644"
+
+    - name: Umount ISO share
+      ansible.posix.mount:
+        path: /media
+        src: "{{ vmware_iso_store }}"
+        fstype: nfs
+        opts: "rw,no_root_squash"
+        state: unmounted

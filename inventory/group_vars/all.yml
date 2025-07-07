@@ -1,0 +1,4 @@
+---
+
+vmware_iso_store: "192.168.122.202:/demo_nfs_isos"
+linux_iso_image: "https://mirror.karneval.cz/pub/fedora/linux/releases/42/Server/x86_64/iso/Fedora-Server-netinst-x86_64-42-1.1.iso"

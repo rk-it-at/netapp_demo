@@ -1,0 +1,105 @@
+---
+# defaults file for netapp_common
+
+netapp_common_hostname: "192.168.122.200"
+netapp_common_username: admin
+netapp_common_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          31626561643566343333396236393731363437313038616639666666343536653730323966343938
+          6634343238383836323366323966393730613562646137310a653639633833616234353362393061
+          31313831336434373330383635333732633239616632316437333638626131626665633935383431
+          3933353533303736320a393464383965383164333363303839343739383435343262386537613935
+          3233
+netapp_common_validate_certs: false
+
+netapp_common_ntp_server:
+  - server: "0.rhel.pool.ntp.org"
+    state: present
+  - server: "1.rhel.pool.ntp.org"
+    state: present
+  - server: "2.rhel.pool.ntp.org"
+    state: present
+  - server: "3.rhel.pool.ntp.org"
+    state: present
+
+netapp_common_login_banner: "
+This system is for the use of authorized users only.
+Usage of this system may be monitored and recorded by
+system personnel.
+
+Anyone using this system expressly consents to such
+monitoring and is advised that if such monitoring
+reveals possible evidence of criminal activity,
+system personnel may provide the evidence from such
+monitoring to law enforcement officials.
+"
+
+netapp_common_aggregates:
+  - name: "demo_aggregate"
+    disk_count: 1
+    nodes: "demo-01"
+    service_state: online
+    state: present
+
+netapp_common_svms:
+  - name: demo_svm
+    services:
+      cifs:
+        allowed: false
+      fcp:
+        allowed: false
+        enabled: false
+      iscsi:
+        allowed: false
+        enabled: false
+      ndmp:
+        allowed: false
+      nfs:
+        allowed: true
+        enabled: true
+      nvme:
+        allowed: false
+        enabled: false
+      s3:
+        allowed: false
+    state: present
+    data_interface:
+      interface_name: demo_svm
+      address: "192.168.122.202"
+      netmask: "255.255.255.0"
+      protocols:
+        - nfs
+      role: data
+      home_node: demo-01
+      vserver: demo_svm
+      state: present
+
+netapp_common_volumes:
+  - name: demo_nfs_isos
+#    aggregate_name: demo_aggregate
+#    export_policy: default
+    nas_application_template:
+      nfs_access:
+        - host: "192.168.122.198/32"
+          access: ro
+        - host: "192.168.122.1/32"
+          access: rw
+    size: 50
+    size_unit: gb
+    type: rw
+    vserver: demo_svm
+    state: present
+
+netapp_common_export_policies:
+  - name: default
+    vserver: demo_svm
+    rules:
+      - ro_rule: any
+        rw_rule: none
+        super_user_security: any
+        client_match: "192.168.122.198/32"
+      - ro_rule: any
+        rw_rule: any
+        super_user_security: any
+        client_match: "192.168.122.1/32"
+    state: present

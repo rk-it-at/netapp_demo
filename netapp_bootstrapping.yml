@@ -1,0 +1,11 @@
+---
+
+- name: NetApp ONTAP bootstrapping
+  hosts: netapp
+  become: false
+  gather_facts: false
+
+  tasks:
+    - name: Include bootstrappig role
+      ansible.builtin.include_role:
+        name: netapp_common
