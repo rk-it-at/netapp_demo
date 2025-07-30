@@ -7,7 +7,7 @@
 
   tasks:
     - name: "Create snapshot for volume {{ netapp_snapshot_volume }}"
-      netapp.ontap.na_ontap_aggregate:
+      netapp.ontap.na_ontap_snapshot:
         snapshot: "{{ netapp_snapshot_name }}"
         volume: "{{ netapp_snapshot_volume }}"
         comment: "{{ netapp_snapshot_comment | default(omit) }}"
