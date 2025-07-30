@@ -89,5 +89,5 @@
   register: _result
   until: _result['code'] | int != 460770
   retries: 60
-  wait: 10
+  delay: 10
   loop: "{{ netapp_common_volumes }}"
