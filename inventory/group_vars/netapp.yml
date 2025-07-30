@@ -42,14 +42,8 @@ netapp_common_svms:
 
 netapp_common_volumes:
   - name: demo_nfs_isos
-#    aggregate_name: demo_aggregate
-#    export_policy: default
-    nas_application_template:
-      nfs_access:
-        - host: "192.168.122.198/32"
-          access: ro
-        - host: "192.168.122.1/32"
-          access: rw
+    aggregate_name: demo_aggregate
+    export_policy: default
     size: 50
     size_unit: gb
     type: rw
@@ -67,5 +61,5 @@ netapp_common_export_policies:
       - ro_rule: any
         rw_rule: any
         super_user_security: any
-        client_match: "192.168.122.1/32"
+        client_match: "192.168.122.79/32"
     state: present

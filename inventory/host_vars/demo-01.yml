@@ -1,0 +1,6 @@
+---
+
+netapp_common_dns_server:
+  - server: "8.8.8.8"
+    domains: lab.rk-it.at
+    state: present
