@@ -13,11 +13,12 @@ netapp_common_password: !vault |
 netapp_common_validate_certs: false
 
 netapp_common_dns_server:
+  - server: "8.8.8.8"
+    domains: "lab.rk-it.at"
+    state: absent
   - server: "192.168.122.1"
     domains: "lab.rk-it.at"
     state: present
-  - server: "8.8.8.8"
-    state: absent
 
 netapp_common_ntp_server:
   - server: "0.rhel.pool.ntp.org"
