@@ -1,0 +1,19 @@
+---
+
+- name: Create Snapshot on NetApp
+  hosts: netapp
+  become: false
+  gather_facts: false
+
+  tasks:
+    - name: "Create snapshot for volume {{ netapp_snapshot_volume }}"
+      netapp.ontap.na_ontap_aggregate:
+        snapshot: "{{ netapp_snapshot_name }}"
+        volume: "{{ netapp_snapshot_volume }}"
+        comment: "{{ netapp_snapshot_comment | default(omit) }}"
+        vserver: "{{ netapp_snapshot_vserver }}"
+        state: present
+        hostname: "{{ netapp_common_hostname }}"
+        username: "{{ netapp_common_username }}"
+        password: "{{ netapp_common_password }}"
+        validate_certs: "{{ netapp_common_validate_certs | default(false) }}"
