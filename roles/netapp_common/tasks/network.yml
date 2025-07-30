@@ -3,7 +3,6 @@
 - name: Configure DNS
   netapp.ontap.na_ontap_dns:
     nameservers: "{{ item['server'] }}"
-    domains: "{{ item['domain'] }}"
     state: "{{ item['state'] }}"
     hostname: "{{ netapp_common_hostname }}"
     username: "{{ netapp_common_username }}"
