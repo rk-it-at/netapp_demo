@@ -86,4 +86,8 @@
     username: "{{ netapp_common_username }}"
     password: "{{ netapp_common_password }}"
     validate_certs: "{{ netapp_common_validate_certs | default(false) }}"
+  register: _result
+  until: _result['code'] | int != 460770
+  retries: 60
+  wait: 10
   loop: "{{ netapp_common_volumes }}"
