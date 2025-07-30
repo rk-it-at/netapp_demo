@@ -3,3 +3,6 @@ demo-01 ansible_connection=local
 
 [linux]
 localhost ansible_connection=local
+
+[cmk]
+cmk-01 ansible_ssh_host=192.168.122.252

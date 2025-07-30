@@ -1,0 +1,71 @@
+---
+
+netapp_common_aggregates:
+  - name: "demo_aggregate"
+    disk_count: 1
+    nodes: "demo-01"
+    service_state: online
+    state: present
+
+netapp_common_svms:
+  - name: demo_svm
+    services:
+      cifs:
+        allowed: false
+      fcp:
+        allowed: false
+        enabled: false
+      iscsi:
+        allowed: false
+        enabled: false
+      ndmp:
+        allowed: false
+      nfs:
+        allowed: true
+        enabled: true
+      nvme:
+        allowed: false
+        enabled: false
+      s3:
+        allowed: false
+    state: present
+    data_interface:
+      interface_name: demo_svm
+      address: "192.168.122.202"
+      netmask: "255.255.255.0"
+      protocols:
+        - nfs
+      role: data
+      home_node: demo-01
+      vserver: demo_svm
+      state: present
+
+netapp_common_volumes:
+  - name: demo_nfs_isos
+#    aggregate_name: demo_aggregate
+#    export_policy: default
+    nas_application_template:
+      nfs_access:
+        - host: "192.168.122.198/32"
+          access: ro
+        - host: "192.168.122.1/32"
+          access: rw
+    size: 50
+    size_unit: gb
+    type: rw
+    vserver: demo_svm
+    state: present
+
+netapp_common_export_policies:
+  - name: default
+    vserver: demo_svm
+    rules:
+      - ro_rule: any
+        rw_rule: none
+        super_user_security: any
+        client_match: "192.168.122.198/32"
+      - ro_rule: any
+        rw_rule: any
+        super_user_security: any
+        client_match: "192.168.122.1/32"
+    state: present
